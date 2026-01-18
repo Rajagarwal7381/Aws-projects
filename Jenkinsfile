@@ -21,22 +21,21 @@ pipeline {
             }
         }
 
-        stage('Login to AWS ECR') {
-            steps {
-                sh """
-                aws ecr get-login-password --region $AWS_REGION | \
-                docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-                """
-            }
-        }
+      stage('Login to AWS ECR') {
+          steps {
+              sh """
+              aws ecr get-login-password --region ${AWS_REGION} | \
+              docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+              """
+          }
+      }
 
-        stage('Tag & Push Image') {
-            steps {
-                sh """
-                docker tag $IMAGE_NAME:latest $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO_NAME:latest
-                docker push $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO_NAME:latest
-                """
-            }
-        }
-    }
+      stage('Tag & Push Image') {
+          steps {
+              sh """
+              docker tag ${IMAGE_NAME}:latest ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${REPO_NAME}:latest
+              docker push ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${REPO_NAME}:latest
+              """
+          }
+      }
 }
