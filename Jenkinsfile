@@ -5,7 +5,7 @@ pipeline {
         IMAGE_NAME = "demo-app"
         AWS_REGION = "ap-south-1"
         ACCOUNT_ID = "560449669727"
-        REPO_NAME = "560449669727.dkr.ecr.ap-south-1.amazonaws.com/demo"
+        REPO_NAME = "demo"
     }
 
     stages {
