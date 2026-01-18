@@ -13,6 +13,6 @@ public class Controller {
     @GetMapping("/get")
     String getData()
     {
-        return "hello";
+        return "hello1";
     }
 }
