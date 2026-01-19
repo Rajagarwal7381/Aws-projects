@@ -54,12 +54,11 @@ pipeline {
         stage('Deploy to EKS') {
             steps {
                 sh """
-                kubectl set image deployment/${DEPLOYMENT_NAME} \
-                ${DEPLOYMENT_NAME}=${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${REPO_NAME}:${BUILD_NUMBER}
-
-                kubectl rollout status deployment/${DEPLOYMENT_NAME}
+                kubectl set image deployment/demo-app \
+                demo-app=${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${REPO_NAME}:21
                 """
             }
         }
+
     }
 }
