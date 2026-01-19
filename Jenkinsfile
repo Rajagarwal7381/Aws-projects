@@ -6,6 +6,8 @@ pipeline {
         AWS_REGION = "ap-south-1"
         ACCOUNT_ID = "560449669727"
         REPO_NAME = "demo"
+        EKS_CLUSTER = "demo-cluster3"
+        DEPLOYMENT_NAME = "demo-app"
     }
 
     stages {
@@ -17,7 +19,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t $IMAGE_NAME ."
+                sh "docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} ."
             }
         }
 
@@ -33,8 +35,29 @@ pipeline {
         stage('Tag & Push Image') {
             steps {
                 sh """
-                docker tag ${IMAGE_NAME}:latest ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${REPO_NAME}:latest
-                docker push ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${REPO_NAME}:latest
+                docker tag ${IMAGE_NAME}:${BUILD_NUMBER} \
+                ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${REPO_NAME}:${BUILD_NUMBER}
+
+                docker push ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${REPO_NAME}:${BUILD_NUMBER}
+                """
+            }
+        }
+
+        stage('Configure kubectl for EKS') {
+            steps {
+                sh """
+                aws eks update-kubeconfig --region ${AWS_REGION} --name ${EKS_CLUSTER}
+                """
+            }
+        }
+
+        stage('Deploy to EKS') {
+            steps {
+                sh """
+                kubectl set image deployment/${DEPLOYMENT_NAME} \
+                ${DEPLOYMENT_NAME}=${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${REPO_NAME}:${BUILD_NUMBER}
+
+                kubectl rollout status deployment/${DEPLOYMENT_NAME}
                 """
             }
         }
