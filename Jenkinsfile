@@ -6,7 +6,7 @@ pipeline {
         AWS_REGION = "ap-south-1"
         ACCOUNT_ID = "560449669727"
         REPO_NAME = "demo"
-        EKS_CLUSTER = "demo-cluster5"
+        EKS_CLUSTER = "demo-cluster"
         DEPLOYMENT_NAME = "demo-app"
     }
 
