@@ -54,7 +54,7 @@ pipeline {
         stage('Update Image Tag') {
             steps {
                 sh """
-                sed -i 's|image: .*|image: ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${REPO_NAME}:${BUILD_NUMBER}|' demo/deployment.yml
+                sed -i 's|image: .*|image: ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${REPO_NAME}:${BUILD_NUMBER}|' deployment.yml
                 """
             }
         }
@@ -62,7 +62,7 @@ pipeline {
         stage('Deploy to EKS') {
             steps {
                 sh """
-                kubectl apply -f demo/deployment.yml
+                kubectl apply -f deployment.yml
                 kubectl rollout status deployment/${DEPLOYMENT_NAME}
                 """
             }
